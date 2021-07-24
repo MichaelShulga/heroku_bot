@@ -1,26 +1,19 @@
-from vk_api.vk_api import VkApiGroup
-from vk_api.bot_longpoll import VkBotLongPoll
+import logging
 
-from config import *
-from handle import handle
-from methods import Methods
+from bot import VkWrapper
 
-
-def main_loop(longpoll, methods, errors):
-    for event in longpoll.listen():
-        print(event)
-        try:
-            handle(event, methods)
-        except Exception as error:
-            errors.append(error)
+from config import ID, TOKEN
 
 
 def main():
-    vk_session = VkApiGroup(token=TOKEN)
-    methods = Methods(vk_session)
-    errors = []
+    logging.basicConfig(
+        level=logging.DEBUG,
+        encoding='utf-8',
+        format='%(asctime)s %(levelname)-8s %(message)s'
+    )
 
-    main_loop(VkBotLongPoll(vk_session, ID), methods, errors)
+    vk_wrapper = VkWrapper(ID, TOKEN)
+    vk_wrapper.main_loop()
 
 
 if __name__ == '__main__':
